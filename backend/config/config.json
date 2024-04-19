@@ -1,0 +1,12 @@
+{
+	"database": "fundrev",
+	"username": "postgres",
+	"password": "123456",
+	"dialect": "postgres",
+	"define": {
+		"freezeTableName": "true",
+		"paranoid": "true"
+	},
+	"operatorsAliases": false,
+	"logging": false
+}
