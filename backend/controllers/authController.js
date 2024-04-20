@@ -20,33 +20,35 @@ exports.register = async (req, res) => {
       revenue,
     } = req.body;
 
+
+
     if (!username || !password || !user_type) {
       return res
         .status(400)
-        .json({ error: "username, password, and user_type are required" });
+        .json({ message: "username, password, and user_type are required" });
     }
 
     if (
       user_type === "startup" &&
       (!company_name || !business_description || !revenue)
     ) {
-      return res.status(400).json({ error: "All fields are required" });
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     if (user_type !== "startup" && user_type !== "investor") {
-      return res.status(400).json({ error: "Invalid user type" });
+      return res.status(400).json({ message: "Invalid user type" });
     }
 
     if (user_type === "startup") {
       if (revenue < 0) {
-        return res.status(400).json({ error: "Revenue cannot be negative" });
+        return res.status(400).json({ message: "Revenue cannot be negative" });
       }
     }
 
     if (password.length < 6) {
       return res
         .status(400)
-        .json({ error: "Password must be at least 6 characters long" });
+        .json({ message: "Password must be at least 6 characters long" });
     }
 
     const user = await User.findOne({
@@ -56,7 +58,7 @@ exports.register = async (req, res) => {
     });
 
     if (user) {
-      return res.status(400).json({ error: "Username already exists" });
+      return res.status(400).json({ message: "Username already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -99,7 +101,7 @@ exports.register = async (req, res) => {
     console.error(error);
     // revert the transaction if there was an error
     await t.rollback();
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -110,7 +112,7 @@ exports.login = async (req, res) => {
     if (!username || !password) {
       return res
         .status(400)
-        .json({ error: "username and password are required" });
+        .json({ message: "username and password are required" });
     }
 
     const user = await User.findOne({
@@ -120,13 +122,13 @@ exports.login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ error: "Invalid username" });
+      return res.status(400).json({ message: "Username doesnot exist!" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(400).json({ error: "Invalid password" });
+      return res.status(400).json({ message: "Incorrect password" });
     }
 
     const token = jwt.sign(
@@ -138,11 +140,11 @@ exports.login = async (req, res) => {
         expiresIn: "30d",
       }
     );
-
-    res.json({ token, user });
+    
+    res.json({message: "Ok"});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 

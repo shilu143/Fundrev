@@ -9,7 +9,7 @@ router.post("/register", authController.register);
 
 // Route: /api/auth/login
 // Description: Login a user
-router.get("/login", authController.login);
+router.post("/login", authController.login);
 
 // test route
 // Route: /api/auth/test
